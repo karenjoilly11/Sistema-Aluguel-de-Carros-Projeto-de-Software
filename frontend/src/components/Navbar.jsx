@@ -42,8 +42,7 @@ const Navbar = memo(function Navbar() {
     >
       <div className="navbar-inner">
         <a href="#hero" className="navbar-logo">
-          <span className="navbar-logo-mark">DE</span>
-          <span>Spirit Motors</span>
+          <img src="/logo.svg" alt="Spirit Motors" className="navbar-logo-svg" />
         </a>
 
         <ul className="navbar-links">

@@ -31,7 +31,7 @@
   --border:        #333333;
 
   /* Typography */
-  --font-heading:   'Montserrat', sans-serif;
+  --font-heading:   'Racing Sans One', 'Montserrat', sans-serif;
   --font-body:      'Inter', sans-serif;
   --font-technical: 'Space Grotesk', monospace;
 
@@ -209,6 +209,10 @@ ul { list-style: none; }
   color: #fff;
   letter-spacing: 0.02em;
   flex-shrink: 0;
+}
+.navbar-logo-svg {
+  height: 36px;
+  width: auto;
 }
 
 .navbar-links {
@@ -1903,13 +1907,34 @@ ul { list-style: none; }
   overflow: hidden;
 }
 
+/* Carro de fundo */
+.login-car-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/carros/Carros.jpg');
+  background-size: cover;
+  background-position: center 60%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Overlay escuro para legibilidade */
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.72);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .login-bg {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 20% 40%, rgba(43,76,255,0.12) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 80% 70%, rgba(43,76,255,0.07) 0%, transparent 70%);
+    radial-gradient(ellipse 60% 50% at 20% 40%, rgba(43,76,255,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 70%, rgba(43,76,255,0.10) 0%, transparent 70%);
   pointer-events: none;
+  z-index: 0;
 }
 
 .login-card {
@@ -1918,22 +1943,26 @@ ul { list-style: none; }
   width: 100%;
   max-width: 420px;
   margin: 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: rgba(24, 24, 28, 0.88);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 20px;
   padding: 40px;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(43,76,255,0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .login-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 18px;
-  color: #fff;
+  justify-content: center;
   margin-bottom: 28px;
+}
+
+.login-logo-img {
+  height: 52px;
+  width: auto;
+  filter: drop-shadow(0 0 12px rgba(43,76,255,0.5));
 }
 
 .login-title {

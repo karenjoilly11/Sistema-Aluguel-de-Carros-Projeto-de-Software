@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" fill="none">
+  <!-- Hexagon/Shield mark -->
+  <polygon points="28,4 48,4 56,18 56,42 48,56 28,56 20,42 20,18" fill="#2B4CFF"/>
+  <polygon points="30,9 46,9 53,20 53,40 46,51 30,51 23,40 23,20" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- Speed lines inside mark -->
+  <line x1="27" y1="22" x2="49" y2="22" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <line x1="24" y1="30" x2="52" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="27" y1="38" x2="49" y2="38" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <!-- SM initials -->
+  <text x="38" y="34" text-anchor="middle" font-family="'Racing Sans One', sans-serif" font-size="13" fill="white" font-weight="bold">SM</text>
+  <!-- Brand name -->
+  <text x="70" y="26" font-family="'Racing Sans One', sans-serif" font-size="20" fill="white" letter-spacing="1">SPIRIT</text>
+  <text x="70" y="48" font-family="'Racing Sans One', sans-serif" font-size="20" fill="#2B4CFF" letter-spacing="2">MOTORS</text>
+</svg>

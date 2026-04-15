@@ -27,14 +27,17 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      {/* Fundo com gradiente */}
+      {/* Fundo com carro */}
+      <div className="login-car-bg" />
+      {/* Overlay escuro sobre o carro */}
+      <div className="login-overlay" />
+      {/* Gradiente de marca */}
       <div className="login-bg" />
 
       <div className="login-card">
-        {/* Logo */}
+        {/* Logo SVG */}
         <div className="login-logo">
-          <span className="navbar-logo-mark" style={{ width: 34, height: 34, fontSize: 13, borderRadius: 9 }}>DE</span>
-          <span>Spirit Motors</span>
+          <img src="/logo.svg" alt="Spirit Motors" className="login-logo-img" />
         </div>
 
         <h1 className="login-title">Acesso ao Sistema</h1>
