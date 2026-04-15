@@ -7,6 +7,20 @@ import br.puc.aluguelcarros.repository.PedidoRepository;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 
+/**
+ * Serviço responsável pela análise financeira dos pedidos de aluguel.
+ *
+ * <p>Implementa a regra de negócio de crédito:
+ * a soma de todos os rendimentos do cliente deve ser
+ * <strong>maior ou igual a 3× o valor total do pedido</strong>
+ * para que a análise retorne {@code true} (aprovado).</p>
+ *
+ * <p>Se o cliente não possuir nenhum rendimento cadastrado,
+ * a análise retorna {@code false} imediatamente.</p>
+ *
+ * <p>O método {@code realizarAnaliseFinanceira} é anotado com {@code @Transactional}
+ * para carregar o cliente e seus rendimentos (EAGER) dentro de uma sessão Hibernate.</p>
+ */
 @Singleton
 public class FinanceiroService {
 

@@ -9,6 +9,23 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
 
+/**
+ * Serviço responsável por autenticação e registro de usuários.
+ *
+ * <p>Centraliza a lógica de:
+ * <ul>
+ *   <li>Validação de credenciais (email + senha BCrypt)</li>
+ *   <li>Registro de novos usuários, criando a entidade correta conforme a role:
+ *       {@link br.puc.aluguelcarros.model.Cliente} para role {@code CLIENTE},
+ *       {@link br.puc.aluguelcarros.model.Usuario} para demais roles (ADMIN, AGENTE, etc.)</li>
+ *   <li>Verificação de existência de usuários no banco (usado pelo endpoint {@code /auth/setup})</li>
+ * </ul>
+ * </p>
+ *
+ * <p><strong>Importante:</strong> clientes são salvos na tabela {@code clientes}
+ * (via {@code ClienteRepository}), não em {@code usuario} diretamente,
+ * por causa da herança JPA {@code JOINED}.</p>
+ */
 @Singleton
 public class AuthService {
 

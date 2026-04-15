@@ -4,6 +4,24 @@ import jakarta.persistence.*;
 import io.micronaut.serde.annotation.Serdeable;
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa o contrato formal de aluguel.
+ *
+ * <p>Um contrato é gerado a partir de um {@link PedidoAluguel} aprovado
+ * via {@code POST /pedidos/{id}/contrato}. Existe uma relação
+ * {@code OneToOne} entre Contrato e PedidoAluguel.</p>
+ *
+ * <p>O contrato pode ser assinado digitalmente via
+ * {@code POST /contratos/{id}/assinar}, que registra a
+ * {@code dataAssinatura} e marca {@code assinado = true}.</p>
+ *
+ * <p>Opcionalmente, um {@link Banco} pode ser vinculado ao contrato
+ * para representar o crédito bancário utilizado no aluguel.</p>
+ *
+ * <p><strong>Serialização:</strong> os endpoints retornam
+ * {@link br.puc.aluguelcarros.dto.ContratoDTO} para evitar referências
+ * circulares via {@code pedido → cliente/automovel}.</p>
+ */
 @Serdeable
 @Entity
 @Table(name = "contratos")

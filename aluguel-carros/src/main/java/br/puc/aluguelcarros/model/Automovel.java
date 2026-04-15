@@ -3,6 +3,17 @@ package br.puc.aluguelcarros.model;
 import jakarta.persistence.*;
 import io.micronaut.serde.annotation.Serdeable;
 
+/**
+ * Entidade que representa um veículo da frota.
+ *
+ * <p>Cada automóvel possui uma placa única (índice no banco) e um
+ * {@code valorDiaria} utilizado pelo {@link br.puc.aluguelcarros.service.PedidoService}
+ * para calcular o valor total do aluguel com base no número de dias.</p>
+ *
+ * <p>O campo {@code disponivel} indica se o veículo pode ser alugado.
+ * O endpoint {@code GET /automoveis} é público (não exige autenticação)
+ * para permitir que a landing page exiba a frota sem login.</p>
+ */
 @Serdeable
 @Entity
 @Table(name = "automoveis")

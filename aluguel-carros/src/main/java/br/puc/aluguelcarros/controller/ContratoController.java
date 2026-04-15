@@ -7,6 +7,20 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 
+/**
+ * Controller REST para gerenciamento de contratos de aluguel.
+ *
+ * <p>Os contratos são gerados a partir de pedidos aprovados via
+ * {@code POST /pedidos/{id}/contrato}. Este controller oferece
+ * operações de consulta e assinatura.</p>
+ *
+ * <p>Endpoints:
+ * <ul>
+ *   <li>{@code GET  /contratos/{id}}         — busca contrato por ID</li>
+ *   <li>{@code POST /contratos/{id}/assinar} — registra assinatura digital do contrato</li>
+ * </ul>
+ * </p>
+ */
 @Controller("/contratos")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class ContratoController {

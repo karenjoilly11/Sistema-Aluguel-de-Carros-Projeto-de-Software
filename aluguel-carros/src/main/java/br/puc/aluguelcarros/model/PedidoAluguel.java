@@ -5,6 +5,26 @@ import io.micronaut.serde.annotation.Serdeable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 
+/**
+ * Entidade que representa uma solicitação de aluguel de veículo.
+ *
+ * <p>Ciclo de vida do status:
+ * <pre>
+ *   PENDENTE → APROVADO → CONCLUIDO
+ *           ↘ CANCELADO
+ * </pre>
+ * </p>
+ *
+ * <p>As associações {@code cliente} e {@code automovel} são {@code LAZY} e
+ * anotadas com {@code @JsonIgnore} para evitar serialização circular.
+ * Todos os endpoints que retornam pedidos utilizam {@link br.puc.aluguelcarros.dto.PedidoDTO},
+ * que expõe apenas os IDs dessas entidades.</p>
+ *
+ * <p>O {@code valorTotal} é calculado automaticamente pelo
+ * {@link br.puc.aluguelcarros.service.PedidoService} com base no
+ * {@code valorDiaria} do automóvel e no número de dias entre
+ * {@code dataInicio} e {@code dataFim}.</p>
+ */
 @Serdeable
 @Entity
 @Table(name = "pedidos_aluguel")

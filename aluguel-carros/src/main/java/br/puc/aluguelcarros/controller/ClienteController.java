@@ -12,6 +12,24 @@ import jakarta.annotation.Nullable;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento de clientes.
+ *
+ * <p>Todos os endpoints exigem autenticação, exceto onde sobrescrito.
+ * Retorna {@link br.puc.aluguelcarros.dto.ClienteDTO} nos endpoints de listagem
+ * para evitar serialização circular.</p>
+ *
+ * <p>Endpoints:
+ * <ul>
+ *   <li>{@code GET  /clientes}      — lista todos os clientes (autenticado)</li>
+ *   <li>{@code GET  /clientes/me}   — retorna dados do usuário logado via JWT</li>
+ *   <li>{@code GET  /clientes/{id}} — busca cliente por ID</li>
+ *   <li>{@code POST /clientes}      — cadastra cliente (público)</li>
+ *   <li>{@code PUT  /clientes/{id}} — atualiza dados do cliente</li>
+ *   <li>{@code DELETE /clientes/{id}} — remove cliente</li>
+ * </ul>
+ * </p>
+ */
 @Controller("/clientes")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class ClienteController {

@@ -6,10 +6,25 @@ import io.micronaut.serde.annotation.Serdeable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Entidade que representa um cliente do sistema de aluguel.
+ *
+ * <p>Herda de {@link Usuario} via {@code InheritanceType.JOINED}: os dados de
+ * autenticação ficam na tabela {@code usuario} e os dados específicos do
+ * cliente ficam na tabela {@code clientes}, ligadas pela PK/FK compartilhada.</p>
+ *
+ * <p>Um cliente pode ter até 3 {@link Rendimento}s cadastrados (composição forte),
+ * utilizados pela análise financeira para aprovação de pedidos.
+ * A lista de {@link PedidoAluguel}s é mapeada como associação bidirecional
+ * e <strong>não é serializada no JSON</strong> para evitar referência circular —
+ * use os endpoints de pedidos para acessá-los.</p>
+ *
+ * <p>O campo {@code cpf} é opcional ({@code nullable=true}) para permitir
+ * cadastro imediato sem documento.</p>
+ */
 @Serdeable
 @Entity
 @Table(name = "clientes")
-// O Cliente herda Nome, Email e Senha de Usuario via herança JPA
 public class Cliente extends Usuario {
 
     // No diagrama: CPF (int), Endereco (String), Profissao (String)

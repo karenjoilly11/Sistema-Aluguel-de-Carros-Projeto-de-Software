@@ -13,6 +13,23 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Map;
 
+/**
+ * Controller REST para gerenciamento de usuários do sistema.
+ *
+ * <p>A maioria das operações é restrita a usuários com role {@code ADMIN},
+ * verificado manualmente via {@code Authentication} por ser mais explícito
+ * que {@code @Secured("ADMIN")} neste contexto.</p>
+ *
+ * <p>Endpoints:
+ * <ul>
+ *   <li>{@code GET    /usuarios/me}  — dados do usuário autenticado (qualquer role)</li>
+ *   <li>{@code GET    /usuarios}     — lista todos os usuários (somente ADMIN)</li>
+ *   <li>{@code POST   /usuarios}     — cria usuário com role customizada (somente ADMIN)</li>
+ *   <li>{@code PUT    /usuarios/{id}}— atualiza nome, email, role ou senha (somente ADMIN)</li>
+ *   <li>{@code DELETE /usuarios/{id}}— remove usuário (somente ADMIN, não pode remover a si mesmo)</li>
+ * </ul>
+ * </p>
+ */
 @Controller("/usuarios")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class UsuarioController {

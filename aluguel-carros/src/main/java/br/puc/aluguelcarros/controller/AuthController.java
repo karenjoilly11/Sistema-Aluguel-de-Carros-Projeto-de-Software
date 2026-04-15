@@ -12,6 +12,20 @@ import io.micronaut.security.token.generator.TokenGenerator;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Controller responsável por autenticação e registro de usuários.
+ *
+ * <p>Todos os endpoints são públicos ({@code IS_ANONYMOUS}) pois são
+ * acessados antes do login.</p>
+ *
+ * <p>Endpoints disponíveis:
+ * <ul>
+ *   <li>{@code POST /auth/login} — autentica e retorna JWT + dados do usuário</li>
+ *   <li>{@code POST /auth/registrar} — auto-cadastro público como CLIENTE</li>
+ *   <li>{@code POST /auth/setup} — cria o primeiro ADMIN (executado apenas uma vez)</li>
+ * </ul>
+ * </p>
+ */
 @Controller("/auth")
 @Secured(SecurityRule.IS_ANONYMOUS)
 public class AuthController {

@@ -12,6 +12,23 @@ import io.micronaut.security.rules.SecurityRule;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento de pedidos de aluguel.
+ *
+ * <p>Todos os endpoints retornam DTOs ({@link br.puc.aluguelcarros.dto.PedidoDTO}
+ * ou {@link br.puc.aluguelcarros.dto.ContratoDTO}) para evitar serialização circular.</p>
+ *
+ * <p>Endpoints:
+ * <ul>
+ *   <li>{@code GET    /pedidos/todos}              — lista todos os pedidos (ADMIN)</li>
+ *   <li>{@code POST   /pedidos}                    — cria novo pedido de aluguel</li>
+ *   <li>{@code GET    /pedidos/cliente/{clienteId}}— pedidos de um cliente específico</li>
+ *   <li>{@code DELETE /pedidos/{id}}               — cancela um pedido</li>
+ *   <li>{@code POST   /pedidos/{id}/contrato}      — converte pedido em contrato (aprova)</li>
+ *   <li>{@code GET    /pedidos/{id}/analise-financeira} — verifica aprovação financeira</li>
+ * </ul>
+ * </p>
+ */
 @Controller("/pedidos")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class PedidoController {

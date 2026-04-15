@@ -9,6 +9,23 @@ import io.micronaut.security.rules.SecurityRule;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento da frota de automóveis.
+ *
+ * <p>O endpoint de listagem ({@code GET /automoveis}) é público para permitir
+ * que a landing page exiba os veículos disponíveis sem necessidade de login.
+ * Os demais endpoints exigem autenticação.</p>
+ *
+ * <p>Endpoints:
+ * <ul>
+ *   <li>{@code GET    /automoveis}      — lista toda a frota (público)</li>
+ *   <li>{@code POST   /automoveis}      — cadastra novo veículo</li>
+ *   <li>{@code GET    /automoveis/{id}} — busca veículo por ID</li>
+ *   <li>{@code PUT    /automoveis/{id}} — atualiza dados do veículo</li>
+ *   <li>{@code DELETE /automoveis/{id}} — remove veículo</li>
+ * </ul>
+ * </p>
+ */
 @Controller("/automoveis")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class AutomovelController {

@@ -15,6 +15,24 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Serviço responsável pela lógica de negócio dos pedidos de aluguel.
+ *
+ * <p>Responsabilidades:
+ * <ul>
+ *   <li><strong>criarSolicitacao:</strong> valida automóvel disponível, valida datas
+ *       (início deve ser antes do fim), calcula {@code valorTotal} com base em
+ *       {@code valorDiaria × dias}, salva com status {@code PENDENTE}.</li>
+ *   <li><strong>listarTodosDTO / listarPorCliente:</strong> retornam {@link br.puc.aluguelcarros.dto.PedidoDTO}
+ *       dentro de {@code @Transactional} para acessar as associações LAZY
+ *       sem erro de "no Session".</li>
+ *   <li><strong>cancelarSolicitacao:</strong> muda o status para {@code CANCELADO}.</li>
+ *   <li><strong>converterParaContrato:</strong> aprova o pedido e gera um
+ *       {@link br.puc.aluguelcarros.model.Contrato} retornado como
+ *       {@link br.puc.aluguelcarros.dto.ContratoDTO}.</li>
+ * </ul>
+ * </p>
+ */
 @Singleton
 public class PedidoService {
 

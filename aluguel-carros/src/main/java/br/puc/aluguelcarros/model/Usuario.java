@@ -5,9 +5,18 @@ import jakarta.validation.constraints.NotBlank;
 import io.micronaut.serde.annotation.Serdeable;
 
 /**
- * Entidade de autenticação.
- * Armazena credenciais de acesso ao sistema.
- * A senha é sempre armazenada como hash BCrypt — nunca em texto puro.
+ * Entidade base do sistema de usuários.
+ *
+ * <p>Representa qualquer pessoa que possui acesso ao sistema.
+ * É a classe pai de uma hierarquia JPA (InheritanceType.JOINED), ou seja,
+ * cada subclasse (Cliente, Agente, Banco, Empresa) possui sua própria tabela
+ * com uma FK apontando para a tabela {@code usuario}.</p>
+ *
+ * <p>Roles disponíveis: {@code ADMIN}, {@code CLIENTE}, {@code AGENTE},
+ * {@code BANCO}, {@code EMPRESA}.</p>
+ *
+ * <p><strong>Segurança:</strong> a senha nunca é armazenada em texto puro —
+ * apenas o hash BCrypt gerado em {@link br.puc.aluguelcarros.service.AuthService}.</p>
  */
 @Serdeable
 @Entity

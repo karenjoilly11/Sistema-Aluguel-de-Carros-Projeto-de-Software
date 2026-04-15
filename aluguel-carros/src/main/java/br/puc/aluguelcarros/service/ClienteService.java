@@ -11,6 +11,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Serviço responsável pelo gerenciamento de clientes.
+ *
+ * <p>Oferece operações de CRUD sobre a entidade {@link br.puc.aluguelcarros.model.Cliente},
+ * além de métodos que retornam {@link br.puc.aluguelcarros.dto.ClienteDTO}
+ * para evitar serialização circular ({@code Cliente → pedidos → PedidoAluguel → Cliente}).</p>
+ *
+ * <p>Os métodos {@code listarTodosDTO()} e {@code buscarPorIdDTO()} são anotados com
+ * {@code @Transactional} para garantir que as coleções EAGER
+ * (rendimentos) sejam carregadas dentro de uma sessão Hibernate ativa.</p>
+ */
 @Singleton
 public class ClienteService {
 

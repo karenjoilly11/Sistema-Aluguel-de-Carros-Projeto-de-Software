@@ -3,6 +3,22 @@ package br.puc.aluguelcarros.model;
 import jakarta.persistence.*;
 import io.micronaut.serde.annotation.Serdeable;
 
+/**
+ * Entidade que representa um agente operacional do sistema.
+ *
+ * <p>Agente é a classe intermediária da hierarquia de usuários entre
+ * {@link Usuario} e as entidades especializadas {@link Banco} e {@link Empresa}.
+ * Possui dados pessoais adicionais como CPF, endereço e profissão.</p>
+ *
+ * <p>Na hierarquia JPA (InheritanceType.JOINED):
+ * <pre>
+ *   Usuario
+ *     └── Agente (tabela: agentes)
+ *           ├── Banco  (tabela: bancos)
+ *           └── Empresa (tabela: empresas)
+ * </pre>
+ * </p>
+ */
 @Serdeable
 @Entity
 @Table(name = "agentes")

@@ -3,6 +3,13 @@ package br.puc.aluguelcarros.dto;
 import io.micronaut.serde.annotation.Serdeable;
 import java.time.LocalDateTime;
 
+/**
+ * DTO (Data Transfer Object) para contratos de aluguel.
+ *
+ * <p>Evita serialização circular: {@code Contrato → PedidoAluguel → Cliente/Automovel}.
+ * Expõe apenas o {@code pedidoId} e o {@code statusPedido} como referência
+ * ao pedido associado.</p>
+ */
 @Serdeable
 public class ContratoDTO {
     private Long id;

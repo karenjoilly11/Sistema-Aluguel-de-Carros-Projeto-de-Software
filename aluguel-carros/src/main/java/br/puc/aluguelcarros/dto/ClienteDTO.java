@@ -3,6 +3,15 @@ package br.puc.aluguelcarros.dto;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.List;
 
+/**
+ * DTO (Data Transfer Object) para clientes.
+ *
+ * <p>Evita serialização circular: {@code Cliente → pedidos → PedidoAluguel → cliente}.
+ * Inclui os rendimentos como lista de {@link RendimentoDTO} aninhado,
+ * permitindo que o frontend exiba o resumo financeiro do cliente.</p>
+ *
+ * <p>A senha (<em>senhaHash</em>) nunca é incluída neste DTO.</p>
+ */
 @Serdeable
 public class ClienteDTO {
     private Long id;
