@@ -3,20 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
 const STATUS_CORES = {
-  PENDENTE: { bg: '#78350f', color: '#fcd34d' },
-  APROVADO: { bg: '#14532d', color: '#4ade80' },
+  PENDENTE:  { bg: '#78350f', color: '#fcd34d' },
+  APROVADO:  { bg: '#14532d', color: '#4ade80' },
   CANCELADO: { bg: '#450a0a', color: '#f87171' },
   CONCLUIDO: { bg: '#1e3a5f', color: '#60a5fa' },
 };
-
-function StatusBadge({ status }) {
-  const s = STATUS_CORES[status] ?? { bg: '#27272a', color: '#a1a1aa' };
-  return (
-    <span style={{ background: s.bg, color: s.color, padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 700 }}>
-      {status}
-    </span>
-  );
-}
 
 function fmtMoeda(v) {
   return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -28,14 +19,143 @@ function fmtData(d) {
   return `${dia}/${m}/${y}`;
 }
 
+// Modal com detalhes do pedido para análise
+function DetalheModal({ pedido, onAprovar, onRejeitar, onClose }) {
+  const [aprovando, setAprovando] = useState(false);
+  const [rejeitando, setRejeitando] = useState(false);
+
+  if (!pedido) return null;
+
+  const rendaSuficiente = pedido.rendaInformada != null && pedido.valorTotal != null
+    ? pedido.rendaInformada >= pedido.valorTotal * 3
+    : null;
+
+  return (
+    <AnimatePresence>
+      <motion.div className="cm-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+      <motion.div
+        className="cm-panel"
+        style={{ maxWidth: 500 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.25 }}
+      >
+        <div className="cm-neon-top" />
+        <div className="cm-header">
+          <h2 className="cm-title">Pedido #{pedido.id} — Análise</h2>
+          <button className="cm-close" onClick={onClose}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="cm-body">
+          <div style={{ display: 'grid', gap: 10 }}>
+
+            {/* Info do pedido */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <Info label="Cliente ID" value={pedido.clienteId} />
+              <Info label="Automóvel ID" value={pedido.automovelId} />
+              <Info label="Retirada" value={fmtData(pedido.dataInicio)} />
+              <Info label="Devolução" value={fmtData(pedido.dataFim)} />
+              <Info label="Valor Total" value={pedido.valorTotal != null ? fmtMoeda(pedido.valorTotal) : '—'} />
+              <Info label="Status" value={
+                <span style={{ background: STATUS_CORES[pedido.status]?.bg, color: STATUS_CORES[pedido.status]?.color, padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 700 }}>
+                  {pedido.status}
+                </span>
+              } />
+            </div>
+
+            {/* Separador */}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 8, marginTop: 2 }}>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
+                Dados do cliente
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <Info label="CPF informado" value={pedido.cpfInformado || '—'} />
+                <Info label="Renda mensal" value={pedido.rendaInformada != null ? fmtMoeda(pedido.rendaInformada) : '—'} />
+              </div>
+
+              {/* Indicador automático de renda */}
+              {rendaSuficiente !== null && (
+                <div style={{
+                  marginTop: 8,
+                  padding: '8px 12px',
+                  borderRadius: 8,
+                  fontSize: 12,
+                  background: rendaSuficiente ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
+                  border: `1px solid ${rendaSuficiente ? '#166534' : '#7f1d1d'}`,
+                  color: rendaSuficiente ? '#4ade80' : '#f87171',
+                }}>
+                  {rendaSuficiente
+                    ? `✓ Renda suficiente — ${fmtMoeda(pedido.rendaInformada)} ≥ 3× ${fmtMoeda(pedido.valorTotal)}`
+                    : `✗ Renda insuficiente — ${fmtMoeda(pedido.rendaInformada)} < 3× ${fmtMoeda(pedido.valorTotal)}`
+                  }
+                </div>
+              )}
+
+              {pedido.observacao && (
+                <div style={{ marginTop: 8 }}>
+                  <p style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Observação do cliente</p>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, background: 'rgba(255,255,255,0.04)', padding: '8px 12px', borderRadius: 8 }}>
+                    {pedido.observacao}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="cm-footer">
+          <button
+            className="btn-secondary-hero"
+            style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}
+            disabled={rejeitando || aprovando}
+            onClick={async () => {
+              setRejeitando(true);
+              await onRejeitar(pedido.id);
+              setRejeitando(false);
+              onClose();
+            }}
+          >
+            {rejeitando ? <span className="cm-spinner" /> : '✕ Rejeitar'}
+          </button>
+          <button
+            className="btn-primary-hero"
+            disabled={aprovando || rejeitando}
+            onClick={async () => {
+              setAprovando(true);
+              await onAprovar(pedido.id);
+              setAprovando(false);
+              onClose();
+            }}
+          >
+            {aprovando ? <span className="cm-spinner" /> : '✓ Aprovar'}
+          </button>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function Info({ label, value }) {
+  return (
+    <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '8px 12px' }}>
+      <span style={{ fontSize: 10, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
+      <span style={{ fontSize: 13, fontWeight: 600 }}>{value}</span>
+    </div>
+  );
+}
+
 export default function AgentesSection() {
   const { token } = useAuth();
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [online, setOnline] = useState(true);
-  const [analisando, setAnalisando] = useState(null);
-  const [aprovando, setAprovando] = useState(null);
   const [toast, setToast] = useState(null);
+  const [pedidoDetalhe, setPedidoDetalhe] = useState(null);
 
   const apiFetch = useCallback((url, opts = {}) => {
     return fetch(url, {
@@ -53,7 +173,6 @@ export default function AgentesSection() {
     setLoading(true);
     try {
       const data = await apiFetch('/pedidos/todos').then(r => r.ok ? r.json() : []);
-      // Filtra apenas pedidos PENDENTE para análise
       setPedidos(data.filter(p => p.status === 'PENDENTE'));
       setOnline(true);
     } catch {
@@ -63,45 +182,33 @@ export default function AgentesSection() {
     }
   }, [apiFetch]);
 
-  useEffect(() => {
-    carregarPedidos();
-  }, [carregarPedidos]);
-
-  async function analisarPedido(id) {
-    setAnalisando(id);
-    try {
-      const r = await apiFetch(`/pedidos/${id}/analise-financeira`);
-      const aprovado = await r.json();
-
-      if (aprovado) {
-        showToast('✓ Análise financeira aprovada!');
-      } else {
-        showToast('✗ Renda insuficiente ou sem rendimentos informados.', 'err');
-      }
-
-      // Recarrega a lista
-      await carregarPedidos();
-    } catch {
-      showToast('Erro ao analisar pedido.', 'err');
-    } finally {
-      setAnalisando(null);
-    }
-  }
+  useEffect(() => { carregarPedidos(); }, [carregarPedidos]);
 
   async function aprovarPedido(id) {
-    setAprovando(id);
     try {
       const r = await apiFetch(`/pedidos/${id}/contrato`, { method: 'POST' });
       if (r.ok) {
-        showToast('Contrato gerado com sucesso!');
+        showToast('Contrato gerado — pedido aprovado!');
         await carregarPedidos();
       } else {
-        showToast('Erro ao gerar contrato.', 'err');
+        showToast('Erro ao aprovar pedido.', 'err');
       }
     } catch {
       showToast('Erro ao conectar ao servidor.', 'err');
-    } finally {
-      setAprovando(null);
+    }
+  }
+
+  async function rejeitarPedido(id) {
+    try {
+      const r = await apiFetch(`/pedidos/${id}/rejeitar`, { method: 'POST' });
+      if (r.ok || r.status === 204) {
+        showToast('Pedido rejeitado.', 'err');
+        await carregarPedidos();
+      } else {
+        showToast('Erro ao rejeitar pedido.', 'err');
+      }
+    } catch {
+      showToast('Erro ao conectar ao servidor.', 'err');
     }
   }
 
@@ -111,55 +218,32 @@ export default function AgentesSection() {
 
       {/* Toast */}
       {toast && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: 28,
-            right: 28,
-            zIndex: 999,
-            background: toast.tipo === 'ok' ? '#14532d' : '#450a0a',
-            color: toast.tipo === 'ok' ? '#4ade80' : '#f87171',
-            border: `1px solid ${toast.tipo === 'ok' ? '#166534' : '#7f1d1d'}`,
-            padding: '10px 18px',
-            borderRadius: 10,
-            fontSize: 13,
-            fontWeight: 500,
-            boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
-          }}
-        >
+        <div style={{
+          position: 'fixed', bottom: 28, right: 28, zIndex: 999,
+          background: toast.tipo === 'ok' ? '#14532d' : '#450a0a',
+          color: toast.tipo === 'ok' ? '#4ade80' : '#f87171',
+          border: `1px solid ${toast.tipo === 'ok' ? '#166534' : '#7f1d1d'}`,
+          padding: '10px 18px', borderRadius: 10, fontSize: 13, fontWeight: 500,
+          boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+        }}>
           {toast.msg}
         </div>
       )}
 
       <div className="section-container">
-        {/* Header */}
-        <motion.div
-          className="section-header"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+        <motion.div className="section-header"
+          initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
         >
           <span className="section-tag">Análise de Pedidos</span>
-          <h2 className="section-title">
-            Pedidos <span className="accent-text">Pendentes</span>
-          </h2>
+          <h2 className="section-title">Pedidos <span className="accent-text">Pendentes</span></h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginTop: 8 }}>
-            Avalie a rentabilidade de cada cliente e aprove contratos
+            Revise CPF, renda informada e aprove ou rejeite cada solicitação
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          {/* Toolbar */}
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 18 }}>
-              Fila de Análise
-            </h3>
+            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 18 }}>Fila de Análise</h3>
             <button className="sis-btn-refresh" onClick={carregarPedidos} title="Recarregar">
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
                 <path d="M11 6.5A4.5 4.5 0 012.5 9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
@@ -176,9 +260,7 @@ export default function AgentesSection() {
             {!loading && !online && (
               <div className="sistema-offline">
                 <p>Não foi possível conectar ao backend.</p>
-                <button className="btn-secondary-hero" style={{ fontSize: 13, marginTop: 12 }} onClick={carregarPedidos}>
-                  Tentar novamente
-                </button>
+                <button className="btn-secondary-hero" style={{ fontSize: 13, marginTop: 12 }} onClick={carregarPedidos}>Tentar novamente</button>
               </div>
             )}
 
@@ -198,58 +280,71 @@ export default function AgentesSection() {
                   <tr>
                     <th className="sis-th">#</th>
                     <th className="sis-th">Cliente</th>
-                    <th className="sis-th">Automóvel</th>
-                    <th className="sis-th sis-hidden-sm">Retirada</th>
-                    <th className="sis-th sis-hidden-sm">Devolução</th>
+                    <th className="sis-th sis-hidden-sm">CPF</th>
+                    <th className="sis-th sis-hidden-sm">Renda</th>
+                    <th className="sis-th sis-hidden-md">Período</th>
                     <th className="sis-th">Valor</th>
+                    <th className="sis-th">Situação</th>
                     <th className="sis-th">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {pedidos.map((p) => (
-                    <tr key={p.id} className="sis-row">
-                      <td className="sis-td sis-td--id">{p.id}</td>
-                      <td className="sis-td">{p.cliente?.nome || '—'}</td>
-                      <td className="sis-td">
-                        {p.automovel ? `${p.automovel.marca} ${p.automovel.modelo}` : '—'}
-                      </td>
-                      <td className="sis-td sis-hidden-sm">{fmtData(p.dataInicio)}</td>
-                      <td className="sis-td sis-hidden-sm">{fmtData(p.dataFim)}</td>
-                      <td className="sis-td">{p.valorTotal != null ? fmtMoeda(p.valorTotal) : '—'}</td>
-                      <td className="sis-td sis-td--actions">
-                        <button
-                          className="sis-btn-edit"
-                          onClick={() => analisarPedido(p.id)}
-                          disabled={analisando === p.id}
-                          title="Analisar financeira"
-                          style={{
-                            background: 'rgba(59, 130, 246, 0.2)',
-                            color: '#3b82f6',
-                          }}
-                        >
-                          {analisando === p.id ? '…' : '📊'}
-                        </button>
-                        <button
-                          className="sis-btn-edit"
-                          onClick={() => aprovarPedido(p.id)}
-                          disabled={aprovando === p.id}
-                          title="Gerar contrato"
-                          style={{
-                            background: 'rgba(34,197,94,0.2)',
-                            color: '#4ade80',
-                          }}
-                        >
-                          {aprovando === p.id ? '…' : '✓'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {pedidos.map((p) => {
+                    const rendaSuficiente = p.rendaInformada != null && p.valorTotal != null
+                      ? p.rendaInformada >= p.valorTotal * 3
+                      : null;
+                    return (
+                      <tr key={p.id} className="sis-row">
+                        <td className="sis-td sis-td--id">{p.id}</td>
+                        <td className="sis-td">Cliente #{p.clienteId}</td>
+                        <td className="sis-td sis-hidden-sm" style={{ fontFamily: 'monospace', fontSize: 12 }}>
+                          {p.cpfInformado || <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                        </td>
+                        <td className="sis-td sis-hidden-sm">
+                          {p.rendaInformada != null
+                            ? <span style={{ color: rendaSuficiente === true ? '#4ade80' : rendaSuficiente === false ? '#f87171' : 'inherit' }}>
+                                {fmtMoeda(p.rendaInformada)}
+                              </span>
+                            : <span style={{ color: 'var(--text-muted)' }}>—</span>
+                          }
+                        </td>
+                        <td className="sis-td sis-hidden-md" style={{ fontSize: 12 }}>
+                          {fmtData(p.dataInicio)} → {fmtData(p.dataFim)}
+                        </td>
+                        <td className="sis-td">{p.valorTotal != null ? fmtMoeda(p.valorTotal) : '—'}</td>
+                        <td className="sis-td">
+                          {rendaSuficiente === true && <span style={{ fontSize: 11, color: '#4ade80' }}>✓ Renda ok</span>}
+                          {rendaSuficiente === false && <span style={{ fontSize: 11, color: '#f87171' }}>✗ Renda baixa</span>}
+                          {rendaSuficiente === null && <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Sem dados</span>}
+                        </td>
+                        <td className="sis-td sis-td--actions">
+                          <button
+                            className="sis-btn-edit"
+                            onClick={() => setPedidoDetalhe(p)}
+                            title="Ver detalhes e decidir"
+                            style={{ fontSize: 11, padding: '3px 9px', whiteSpace: 'nowrap' }}
+                          >
+                            Analisar
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}
           </div>
         </motion.div>
       </div>
+
+      {pedidoDetalhe && (
+        <DetalheModal
+          pedido={pedidoDetalhe}
+          onAprovar={aprovarPedido}
+          onRejeitar={rejeitarPedido}
+          onClose={() => setPedidoDetalhe(null)}
+        />
+      )}
     </section>
   );
 }

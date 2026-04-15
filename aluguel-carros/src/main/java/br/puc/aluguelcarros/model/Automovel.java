@@ -36,6 +36,7 @@ public class Automovel {
     private int ano;
     private Double valorDiaria;
     private boolean disponivel = true;
+    private String urlFoto;
 
     public Automovel() {}
 
@@ -63,4 +64,7 @@ public class Automovel {
 
     public boolean isDisponivel() { return disponivel; }
     public void setDisponivel(boolean disponivel) { this.disponivel = disponivel; }
+
+    public String getUrlFoto() { return urlFoto; }
+    public void setUrlFoto(String urlFoto) { this.urlFoto = urlFoto; }
 }

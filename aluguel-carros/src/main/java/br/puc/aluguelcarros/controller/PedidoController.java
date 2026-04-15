@@ -67,6 +67,12 @@ public class PedidoController {
         return HttpResponse.created(pedidoService.converterParaContrato(id));
     }
 
+    @Post("/{id}/rejeitar")
+    public HttpResponse<Void> rejeitarSolicitacao(Long id) {
+        pedidoService.rejeitarSolicitacao(id);
+        return HttpResponse.noContent();
+    }
+
     @Get("/{id}/analise-financeira")
     public HttpResponse<Boolean> analisarFinanceiro(Long id) {
         boolean aprovado = financeiroService.realizarAnaliseFinanceira(id);

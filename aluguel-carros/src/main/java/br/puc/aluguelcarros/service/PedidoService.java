@@ -69,20 +69,20 @@ public class PedidoService {
         pedido.setValorTotal(auto.getValorDiaria() * dias);
         pedido.setStatus("PENDENTE");
         PedidoAluguel salvo = repository.save(pedido);
-        return new PedidoDTO(salvo.getId(), salvo.getDataInicio(), salvo.getDataFim(), salvo.getStatus(), salvo.getValorTotal(), salvo.getCliente().getId(), salvo.getAutomovel().getId());
+        return toDTO(salvo);
     }
 
     @Transactional
     public List<PedidoDTO> listarTodosDTO() {
         return repository.findAll().stream()
-            .map(p -> new PedidoDTO(p.getId(), p.getDataInicio(), p.getDataFim(), p.getStatus(), p.getValorTotal(), p.getCliente().getId(), p.getAutomovel().getId()))
+            .map(this::toDTO)
             .collect(Collectors.toList());
     }
 
     @Transactional
     public List<PedidoDTO> listarPorCliente(Long clienteId) {
         return repository.findByClienteId(clienteId).stream()
-            .map(p -> new PedidoDTO(p.getId(), p.getDataInicio(), p.getDataFim(), p.getStatus(), p.getValorTotal(), p.getCliente().getId(), p.getAutomovel().getId()))
+            .map(this::toDTO)
             .collect(Collectors.toList());
     }
 
@@ -91,6 +91,24 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado: " + id));
         pedido.setStatus("CANCELADO");
         repository.update(pedido);
+    }
+
+    public void rejeitarSolicitacao(Long id) {
+        PedidoAluguel pedido = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado: " + id));
+        if (!"PENDENTE".equals(pedido.getStatus())) {
+            throw new RuntimeException("Apenas pedidos PENDENTE podem ser rejeitados");
+        }
+        pedido.setStatus("CANCELADO");
+        repository.update(pedido);
+    }
+
+    private PedidoDTO toDTO(PedidoAluguel p) {
+        return new PedidoDTO(
+            p.getId(), p.getDataInicio(), p.getDataFim(), p.getStatus(), p.getValorTotal(),
+            p.getCliente().getId(), p.getAutomovel().getId(),
+            p.getCpfInformado(), p.getRendaInformada(), p.getObservacao()
+        );
     }
 
     @Transactional

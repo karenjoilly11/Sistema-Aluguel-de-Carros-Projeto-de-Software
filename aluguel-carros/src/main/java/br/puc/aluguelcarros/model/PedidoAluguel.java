@@ -45,6 +45,11 @@ public class PedidoAluguel {
 
     private Double valorTotal;
 
+    // Dados informados pelo cliente no momento da solicitação
+    private String cpfInformado;
+    private Double rendaInformada;
+    private String observacao;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     @JsonIgnore
@@ -84,4 +89,13 @@ public class PedidoAluguel {
 
     public Contrato getContrato() { return contrato; }
     public void setContrato(Contrato contrato) { this.contrato = contrato; }
+
+    public String getCpfInformado() { return cpfInformado; }
+    public void setCpfInformado(String cpfInformado) { this.cpfInformado = cpfInformado; }
+
+    public Double getRendaInformada() { return rendaInformada; }
+    public void setRendaInformada(Double rendaInformada) { this.rendaInformada = rendaInformada; }
+
+    public String getObservacao() { return observacao; }
+    public void setObservacao(String observacao) { this.observacao = observacao; }
 }

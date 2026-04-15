@@ -25,7 +25,7 @@ function ApiBadge({ online, loading }) {
 
 // ── Modal de Automóvel ────────────────────────────────────────────────────────
 function AutomovelModal({ isOpen, onClose, onSave, automovelParaEditar }) {
-  const vazio = { placa: '', marca: '', modelo: '', cor: '', ano: '', valorDiaria: '', disponivel: true };
+  const vazio = { placa: '', marca: '', modelo: '', cor: '', ano: '', valorDiaria: '', disponivel: true, urlFoto: '' };
   const [form, setForm] = useState(vazio);
   const [saving, setSaving] = useState(false);
   const [erro, setErro] = useState('');
@@ -105,6 +105,21 @@ function AutomovelModal({ isOpen, onClose, onSave, automovelParaEditar }) {
                   Valor por diária (R$) <span className="cm-required">*</span>
                   <input className="cm-input" type="number" min="0" step="0.01" value={form.valorDiaria} onChange={(e) => set('valorDiaria', e.target.value)} placeholder="1500.00" />
                 </label>
+                <label className="cm-label">
+                  URL da foto
+                  <input className="cm-input" value={form.urlFoto} onChange={(e) => set('urlFoto', e.target.value)} placeholder="https://exemplo.com/foto.jpg" />
+                </label>
+                {form.urlFoto && (
+                  <div style={{ borderRadius: 8, overflow: 'hidden', background: 'rgba(255,255,255,0.04)', textAlign: 'center', maxHeight: 160 }}>
+                    <img
+                      src={form.urlFoto}
+                      alt="Preview"
+                      style={{ maxWidth: '100%', maxHeight: 160, objectFit: 'contain', display: 'block', margin: '0 auto' }}
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                      onLoad={(e) => { e.target.style.display = 'block'; }}
+                    />
+                  </div>
+                )}
                 <label className="cm-label" style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                   <input type="checkbox" checked={form.disponivel} onChange={(e) => set('disponivel', e.target.checked)} />
                   Disponível para aluguel
@@ -181,6 +196,16 @@ const AutomovelRow = memo(function AutomovelRow({ auto, onEditar, onExcluir, onA
       className="sis-row"
     >
       <td className="sis-td sis-td--id">{auto.id}</td>
+      <td className="sis-td sis-hidden-md" style={{ padding: '4px 8px' }}>
+        {auto.urlFoto ? (
+          <img src={auto.urlFoto} alt={`${auto.marca} ${auto.modelo}`}
+            style={{ width: 64, height: 40, objectFit: 'cover', borderRadius: 6, display: 'block' }}
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        ) : (
+          <span className="sis-empty">—</span>
+        )}
+      </td>
       <td className="sis-td sis-td--mono">{auto.placa}</td>
       <td className="sis-td">{auto.marca}</td>
       <td className="sis-td">{auto.modelo}</td>
@@ -341,6 +366,7 @@ export default function AutomoveisSection({ somenteLeitura = false }) {
               <thead>
                 <tr>
                   <th className="sis-th">#</th>
+                  <th className="sis-th sis-hidden-md">Foto</th>
                   <th className="sis-th">Placa</th>
                   <th className="sis-th">Marca</th>
                   <th className="sis-th">Modelo</th>
@@ -354,7 +380,7 @@ export default function AutomoveisSection({ somenteLeitura = false }) {
               <tbody>
                 <AnimatePresence>
                   {autosFiltrados.length === 0 ? (
-                    <tr><td colSpan={somenteLeitura ? 8 : 9} className="sistema-empty">
+                    <tr><td colSpan={somenteLeitura ? 9 : 10} className="sistema-empty">
                       {search ? 'Nenhum resultado para a busca.' : 'Nenhum automóvel cadastrado ainda.'}
                     </td></tr>
                   ) : (

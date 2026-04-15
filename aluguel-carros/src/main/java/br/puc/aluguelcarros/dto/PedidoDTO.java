@@ -20,10 +20,13 @@ public class PedidoDTO {
     private Double valorTotal;
     private Long clienteId;
     private Long automovelId;
+    private String cpfInformado;
+    private Double rendaInformada;
+    private String observacao;
 
     public PedidoDTO() {}
 
-    public PedidoDTO(Long id, LocalDate dataInicio, LocalDate dataFim, String status, Double valorTotal, Long clienteId, Long automovelId) {
+    public PedidoDTO(Long id, LocalDate dataInicio, LocalDate dataFim, String status, Double valorTotal, Long clienteId, Long automovelId, String cpfInformado, Double rendaInformada, String observacao) {
         this.id = id;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
@@ -31,6 +34,9 @@ public class PedidoDTO {
         this.valorTotal = valorTotal;
         this.clienteId = clienteId;
         this.automovelId = automovelId;
+        this.cpfInformado = cpfInformado;
+        this.rendaInformada = rendaInformada;
+        this.observacao = observacao;
     }
 
     public Long getId() { return id; }
@@ -53,4 +59,13 @@ public class PedidoDTO {
 
     public Long getAutomovelId() { return automovelId; }
     public void setAutomovelId(Long automovelId) { this.automovelId = automovelId; }
+
+    public String getCpfInformado() { return cpfInformado; }
+    public void setCpfInformado(String cpfInformado) { this.cpfInformado = cpfInformado; }
+
+    public Double getRendaInformada() { return rendaInformada; }
+    public void setRendaInformada(Double rendaInformada) { this.rendaInformada = rendaInformada; }
+
+    public String getObservacao() { return observacao; }
+    public void setObservacao(String observacao) { this.observacao = observacao; }
 }

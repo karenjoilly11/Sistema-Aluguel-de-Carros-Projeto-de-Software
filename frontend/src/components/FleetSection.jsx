@@ -47,7 +47,8 @@ const FleetCard = memo(function FleetCard({ car, index }) {
     y.set(0);
   }, [x, y]);
 
-  const imgSrc = FALLBACK_IMGS[index % FALLBACK_IMGS.length];
+  const [imgError, setImgError] = useState(false);
+  const imgSrc = car.urlFoto && !imgError ? car.urlFoto : FALLBACK_IMGS[index % FALLBACK_IMGS.length];
 
   return (
     <motion.div
@@ -76,7 +77,7 @@ const FleetCard = memo(function FleetCard({ car, index }) {
 
       {/* Imagem */}
       <div className="fleet-card-img-wrapper">
-        <img src={imgSrc} alt={`${car.marca} ${car.modelo}`} className="fleet-card-img" loading="lazy" />
+        <img src={imgSrc} alt={`${car.marca} ${car.modelo}`} className="fleet-card-img" loading="lazy" onError={() => setImgError(true)} />
         <div className="fleet-card-img-overlay" />
       </div>
 
