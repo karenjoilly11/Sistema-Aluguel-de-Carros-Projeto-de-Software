@@ -233,28 +233,6 @@ export default function SistemaSection() {
           ))}
         </div>
 
-        {/* Aviso módulo de aluguel pendente */}
-        <motion.div
-          className="sistema-pending-notice"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M8 1l7 13H1L8 1z" stroke="#f59e0b" strokeWidth="1.3" strokeLinejoin="round"/>
-            <path d="M8 6v4M8 11.5v.5" stroke="#f59e0b" strokeWidth="1.4" strokeLinecap="round"/>
-          </svg>
-          <div>
-            <strong>Módulo de Aluguel em desenvolvimento</strong>
-            <p>
-              O backend atual gerencia cadastro e perfil financeiro de clientes.
-              As entidades <code>Carro</code>, <code>Contrato</code> e <code>Reserva</code> ainda não existem no sistema —
-              serão implementadas nas próximas sprints.
-            </p>
-          </div>
-        </motion.div>
-
         {/* Barra de ações */}
         <div className="sistema-toolbar">
           <div className="sistema-search-wrapper">

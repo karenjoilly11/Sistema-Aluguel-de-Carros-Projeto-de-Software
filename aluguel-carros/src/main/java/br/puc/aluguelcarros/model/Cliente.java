@@ -2,27 +2,29 @@ package br.puc.aluguelcarros.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import io.micronaut.serde.annotation.Serdeable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Serdeable
 @Entity
 @Table(name = "clientes")
 // O Cliente herda Nome, Email e Senha de Usuario via herança JPA
 public class Cliente extends Usuario {
 
     // No diagrama: CPF (int), Endereco (String), Profissao (String)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String cpf; 
 
     private String endereco;
     private String profissao;
 
     // Relacionamento 1..1 com PedidoAluguel conforme o diagrama
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
     private List<PedidoAluguel> pedidos = new ArrayList<>();
 
     // Relacionamento de composição (losango preto) com Rendimento (0..3)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id")
     @Size(max = 3)
     private List<Rendimento> rendimentos = new ArrayList<>();

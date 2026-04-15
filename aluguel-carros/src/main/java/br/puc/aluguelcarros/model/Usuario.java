@@ -2,12 +2,14 @@ package br.puc.aluguelcarros.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import io.micronaut.serde.annotation.Serdeable;
 
 /**
  * Entidade de autenticação.
  * Armazena credenciais de acesso ao sistema.
  * A senha é sempre armazenada como hash BCrypt — nunca em texto puro.
  */
+@Serdeable
 @Entity
 @Table(name = "usuario")
 @Inheritance(strategy = InheritanceType.JOINED)

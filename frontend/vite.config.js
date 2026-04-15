@@ -15,6 +15,22 @@ export default defineConfig({
         target: 'http://localhost:8082',
         changeOrigin: true,
       },
+      '/automoveis': {
+        target: 'http://localhost:8082',
+        changeOrigin: true,
+      },
+      '/pedidos': {
+        target: 'http://localhost:8082',
+        changeOrigin: true,
+      },
+      '/contratos': {
+        target: 'http://localhost:8082',
+        changeOrigin: true,
+      },
+      '/usuarios': {
+        target: 'http://localhost:8082',
+        changeOrigin: true,
+      },
     },
   },
   build: {

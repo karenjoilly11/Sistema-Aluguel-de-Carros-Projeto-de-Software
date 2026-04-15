@@ -1,39 +1,22 @@
-import { useRef, useCallback, memo } from 'react';
+import { useRef, useCallback, memo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 
-const FLEET = [
-  {
-    name: 'Audi RS6',
-    category: 'Sport',
-    price: 'R$ 890',
-    img: '/carros/audi rs6 fosco.jpg',
-    specs: ['4.0 V8 Biturbo', '630 cv', '0–100 em 3,4s'],
-  },
-  {
-    name: 'Lamborghini Huracán',
-    category: 'Supercar',
-    price: 'R$ 2.400',
-    img: '/carros/huracan verde.jpg',
-    specs: ['5.2 V10', '640 cv', '0–100 em 2,9s'],
-  },
-  {
-    name: 'Lamborghini Urus',
-    category: 'SUV Sport',
-    price: 'R$ 1.600',
-    img: '/carros/lambo italy.webp',
-    specs: ['4.0 V8 Twin-Turbo', '650 cv', '0–100 em 3,6s'],
-  },
-  {
-    name: 'Mercedes AMG',
-    category: 'Luxury',
-    price: 'R$ 1.100',
-    img: '/carros/mercedes 1.jpg',
-    specs: ['4.0 V8 Biturbo', '510 cv', '0–100 em 3,7s'],
-  },
+// Imagens fallback por categoria/index
+const FALLBACK_IMGS = [
+  '/carros/audi rs6 fosco.jpg',
+  '/carros/huracan verde.jpg',
+  '/carros/lambo italy.webp',
+  '/carros/mercedes 1.jpg',
 ];
 
+function fmtMoeda(v) {
+  return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
 const FleetCard = memo(function FleetCard({ car, index }) {
-  const cardRef = useRef(null);
+  const navigate = useNavigate();
+  const cardRef  = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -42,7 +25,6 @@ const FleetCard = memo(function FleetCard({ car, index }) {
   const glareX  = useTransform(x, [-80, 80], [0, 100]);
   const glareY  = useTransform(y, [-80, 80], [0, 100]);
 
-  // damping maior = movimento mais suave, menos trabalho de RAF
   const rotateXSpring = useSpring(rotateX, { stiffness: 120, damping: 28 });
   const rotateYSpring = useSpring(rotateY, { stiffness: 120, damping: 28 });
 
@@ -64,6 +46,8 @@ const FleetCard = memo(function FleetCard({ car, index }) {
     x.set(0);
     y.set(0);
   }, [x, y]);
+
+  const imgSrc = FALLBACK_IMGS[index % FALLBACK_IMGS.length];
 
   return (
     <motion.div
@@ -92,7 +76,7 @@ const FleetCard = memo(function FleetCard({ car, index }) {
 
       {/* Imagem */}
       <div className="fleet-card-img-wrapper">
-        <img src={car.img} alt={car.name} className="fleet-card-img" loading="lazy" />
+        <img src={imgSrc} alt={`${car.marca} ${car.modelo}`} className="fleet-card-img" loading="lazy" />
         <div className="fleet-card-img-overlay" />
       </div>
 
@@ -100,26 +84,26 @@ const FleetCard = memo(function FleetCard({ car, index }) {
       <div className="fleet-card-body" style={{ transform: 'translateZ(20px)' }}>
         <div className="fleet-card-top">
           <span className="fleet-card-category">
-            {car.category}
+            {car.ano ?? 'Premium'}
           </span>
           <span className="fleet-card-price">
-            {car.price}<small>/dia</small>
+            {fmtMoeda(car.valorDiaria)}<small>/dia</small>
           </span>
         </div>
-        <h3 className="fleet-card-name">{car.name}</h3>
+        <h3 className="fleet-card-name">{car.marca} {car.modelo}</h3>
 
         <ul className="fleet-card-specs">
-          {car.specs.map((s) => (
-            <li key={s}>
-              <span className="fleet-spec-dot" />
-              {s}
-            </li>
-          ))}
+          <li><span className="fleet-spec-dot" />Placa: {car.placa}</li>
+          {car.cor && <li><span className="fleet-spec-dot" />Cor: {car.cor}</li>}
+          <li>
+            <span className="fleet-spec-dot" />
+            {car.disponivel ? 'Disponível para aluguel' : 'Indisponível no momento'}
+          </li>
         </ul>
 
         <button
           className="fleet-card-btn"
-          onClick={() => document.getElementById('reservar')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => navigate('/registro')}
         >
           Reservar
         </button>
@@ -128,7 +112,46 @@ const FleetCard = memo(function FleetCard({ car, index }) {
   );
 });
 
+// Skeleton card para o estado de loading
+function SkeletonCard({ index }) {
+  return (
+    <motion.div
+      className="fleet-card"
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.7, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
+      style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+    >
+      <div className="fleet-card-img-wrapper" style={{ background: 'var(--bg-elevated)', animation: 'pulse 1.5s ease-in-out infinite' }} />
+      <div className="fleet-card-body" style={{ gap: 10 }}>
+        <div style={{ height: 14, width: '60%', background: 'var(--bg-elevated)', borderRadius: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ height: 20, width: '80%', background: 'var(--bg-elevated)', borderRadius: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div style={{ height: 14, width: '50%', background: 'var(--bg-elevated)', borderRadius: 6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+      </div>
+    </motion.div>
+  );
+}
+
 export default function FleetSection() {
+  const [carros, setCarros] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/automoveis')
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => {
+        // Mostra somente disponíveis na landing page, até 4 carros
+        const disponiveis = data.filter((c) => c.disponivel !== false).slice(0, 4);
+        setCarros(disponiveis.length > 0 ? disponiveis : data.slice(0, 4));
+      })
+      .catch(() => setCarros([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Se não há carros no banco, não renderiza a seção
+  if (!loading && carros.length === 0) return null;
+
   return (
     <section className="fleet-section" id="frota">
       <div className="section-container">
@@ -152,9 +175,10 @@ export default function FleetSection() {
 
         {/* Grid de carros */}
         <div className="fleet-grid">
-          {FLEET.map((car, i) => (
-            <FleetCard key={car.name} car={car} index={i} />
-          ))}
+          {loading
+            ? [0, 1, 2, 3].map((i) => <SkeletonCard key={i} index={i} />)
+            : carros.map((car, i) => <FleetCard key={car.id} car={car} index={i} />)
+          }
         </div>
       </div>
     </section>

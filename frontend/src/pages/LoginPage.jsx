@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
@@ -81,9 +81,15 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <a href="/" className="login-back">
-          ← Voltar para a landing page
-        </a>
+        <div style={{ textAlign: 'center', marginTop: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
+            Não tem uma conta?{' '}
+            <Link to="/registro" style={{ color: 'var(--blue)', fontWeight: 600 }}>
+              Criar conta
+            </Link>
+          </span>
+          <a href="/" className="login-back">← Voltar para a landing page</a>
+        </div>
       </div>
     </div>
   );

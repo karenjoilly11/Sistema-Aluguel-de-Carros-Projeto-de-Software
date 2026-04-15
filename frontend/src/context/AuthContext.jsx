@@ -2,12 +2,29 @@ import { createContext, useContext, useState, useCallback, useMemo } from 'react
 
 const AuthContext = createContext(null);
 
+function isTokenValido(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem('driveelite_user');
-      return stored ? JSON.parse(stored) : null;
+      if (!stored) return null;
+      const parsed = JSON.parse(stored);
+      // Remove sessão se o token estiver expirado
+      if (parsed?.token && !isTokenValido(parsed.token)) {
+        localStorage.removeItem('driveelite_user');
+        return null;
+      }
+      return parsed;
     } catch {
+      localStorage.removeItem('driveelite_user');
       return null;
     }
   });

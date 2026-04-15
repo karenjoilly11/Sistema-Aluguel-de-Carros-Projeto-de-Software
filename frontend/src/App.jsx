@@ -11,6 +11,7 @@ import CTASection from './components/CTASection';
 import Footer from './components/Footer';
 
 import LoginPage    from './pages/LoginPage';
+import RegisterPage  from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 
 import './App.css';
@@ -56,6 +57,12 @@ export default function App() {
           <Route path="/login" element={
             <PublicOnlyRoute>
               <LoginPage />
+            </PublicOnlyRoute>
+          } />
+
+          <Route path="/registro" element={
+            <PublicOnlyRoute>
+              <RegisterPage />
             </PublicOnlyRoute>
           } />
 
