@@ -35,7 +35,7 @@ import java.util.Map;
 public class UsuarioController {
 
     /** 
-     * Estecontroller esta acessando o Repository diretamente, enquanto outros passam por Service. 
+     * Este controller esta acessando o Repository diretamente, enquanto outros passam por Service. 
      * Para manter a arquitetura MVC mais organizada, seria interessante concentrar regra de negócio nos Services.
     */
    
