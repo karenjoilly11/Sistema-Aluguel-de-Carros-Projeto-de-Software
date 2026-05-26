@@ -26,7 +26,7 @@ import io.micronaut.security.rules.SecurityRule;
 public class ContratoController {
 
     /** 
-     * Alguns controllers (AutomovelController.java, UsuarioController.java e ContratoController.java) acessam o Repository diretamente, enquanto outros passam por Service. 
+     * Este controller esta acessando o Repository diretamente, enquanto outros passam por Service. 
      * Para manter a arquitetura MVC mais organizada, seria interessante concentrar regra de negócio nos Services.
     */
 
