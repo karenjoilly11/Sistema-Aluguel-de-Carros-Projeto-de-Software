@@ -39,6 +39,11 @@ public class Usuario {
     @Column(nullable = false)
     private String nome;
 
+
+    /**
+     * As 'roles' está como String livre, permitindo passar valor digitado errado, tipo “ADMINN” ou “CLIENT”. 
+     * Um enum para 'roles' deixaria o código mais seguro e evitaria bugs difíceis de perceber.
+     */
     @Column(nullable = false)
     private String role; // ADMIN, OPERADOR, etc.
 

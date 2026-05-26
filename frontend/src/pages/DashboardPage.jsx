@@ -10,6 +10,12 @@ import MeusPedidosSection  from '../components/MeusPedidosSection';
 import AgentesSection      from '../components/AgentesSection';
 
 // ── Itens de navegação por role ───────────────────────────────────────────────
+
+/**
+ * A tela só separa apenas o ADMIN de todos outros cargos. 
+ * Como o sistema tem AGENTE, BANCO e EMPRESA, esses perfis acabam caindo na navegação de CLIENTE, mesmo tendo acessos e responsabilidades diferentes.
+ */
+
 const NAV_ADMIN = [
   { id: 'clientes', label: 'Clientes', icon: (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">

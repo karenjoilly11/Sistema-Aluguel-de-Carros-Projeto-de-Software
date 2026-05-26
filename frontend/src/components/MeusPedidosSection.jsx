@@ -49,7 +49,14 @@ export default function MeusPedidosSection() {
     setTimeout(() => setToast(null), 3500);
   }, []);
 
+
   const carregarPedidos = useCallback(async () => {
+
+    /**
+     * Para descobrir o cliente logado, a tela busca 'clientes' e filtra pelo email. 
+     * Isso funciona, mas acho que expõe mais dados do que precisa, poderia usar '/clientes/me' ou já trazer o ID no token/login.
+     */
+
     setLoading(true);
     try {
       const clientes = await apiFetch('/clientes').then((r) => r.ok ? r.json() : []);

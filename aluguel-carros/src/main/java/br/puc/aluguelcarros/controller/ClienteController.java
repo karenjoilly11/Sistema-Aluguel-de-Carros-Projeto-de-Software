@@ -40,11 +40,20 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
+    /**
+     * Esse endpoint lista todos os clientes para qualquer usuário autenticado. Como são dados pessoais, por questão de segurança, 
+     * liberar apenas para ADMIN e deixar o cliente comum usando só '/clientes/me'.
+     */
     @Get
     public List<ClienteDTO> listarClientes() {
         return clienteService.listarTodosDTO();
     }
 
+    /**
+     * O endpoint '/clientes/me' retorna só os dados do token, não os dados completos do cliente no banco. 
+     * Se o usuário atualizar endereço, CPF ou rendimentos, essa rota não mostra isso. 
+     * Poderia buscar o cliente pelo email autenticado.
+     */
     @Get("/me")
     public HttpResponse<java.util.Map<String, Object>> meuPerfil(@Nullable Authentication auth) {
         if (auth == null) {

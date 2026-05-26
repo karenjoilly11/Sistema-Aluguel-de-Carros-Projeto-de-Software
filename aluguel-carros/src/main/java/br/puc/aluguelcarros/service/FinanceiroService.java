@@ -38,6 +38,12 @@ public class FinanceiroService {
      */
     @Transactional
     public boolean realizarAnaliseFinanceira(Long pedidoId) {
+
+        /**
+         * A tela envia 'rendaInformada' no pedido, mas a análise financeira usa apenas os rendimentos cadastrados no perfil do cliente. 
+         * Isso pode confundir o usuário, porque ele informa a renda no pedido e mesmo assim pode ser reprovado se o perfil não tiver rendimentos salvos.
+         */
+
         PedidoAluguel pedido = pedidoRepo.findById(pedidoId)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado: " + pedidoId));
         Cliente cliente = pedido.getCliente();

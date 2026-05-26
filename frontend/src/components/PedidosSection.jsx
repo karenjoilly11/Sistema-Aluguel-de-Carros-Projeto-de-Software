@@ -194,6 +194,13 @@ function ConfirmModal({ pedido, onConfirm, onCancel }) {
 }
 
 // ── Linha da tabela ───────────────────────────────────────────────────────────
+
+/**
+ * O backend retorna só 'clienteId' e 'automovelId', mas a tabela do frontend tenta acessar 'pedido.cliente.nome' e 'pedido.automovel.marca'. 
+ * Isso pode fazer a tela mostrar vazio mesmo com dados salvos. 
+ * Ou o DTO traz os nomes, ou o frontend usa os IDs mesmo.
+ */
+
 const PedidoRow = memo(function PedidoRow({ pedido, onCancelar, onGerarContrato, index }) {
   const podeGerar = pedido.status === 'PENDENTE';
   const podeCancelar = pedido.status === 'PENDENTE';

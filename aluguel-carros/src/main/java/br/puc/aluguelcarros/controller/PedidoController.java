@@ -41,6 +41,11 @@ public class PedidoController {
         this.financeiroService = financeiroService;
     }
 
+
+    /**
+     * Neste método podemos restringir para ADMIN apenas, 
+     * atualmente qualquer usuário logado consegue listar todos os pedidos do sistema.
+     */
     @Get("/todos")
     public List<PedidoDTO> listarTodos() {
         return pedidoService.listarTodosDTO();
@@ -51,6 +56,10 @@ public class PedidoController {
         return HttpResponse.created(pedidoService.criarSolicitacao(pedido));
     }
 
+    /**
+     * Esse endpoint deixa passar qualquer 'clienteId', então um cliente poderia consultar pedidos de outro cliente se souber o ID. 
+     * Seria bom comparar o ID da URL com o ID do usuário logado, ou talvez permitir geral só para ADMIN.
+     */
     @Get("/cliente/{clienteId}")
     public List<PedidoDTO> listarPorCliente(Long clienteId) {
         return pedidoService.listarPorCliente(clienteId);

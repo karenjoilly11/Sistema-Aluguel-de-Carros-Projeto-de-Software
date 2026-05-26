@@ -30,6 +30,10 @@ import java.util.List;
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class AutomovelController {
 
+    /** 
+     * Alguns controllers (AutomovelController.java, UsuarioController.java e ContratoController.java) acessam o Repository diretamente, enquanto outros passam por Service. 
+     * Para manter a arquitetura MVC mais organizada, seria interessante concentrar regra de negócio nos Services.
+    */
     private final AutomovelRepository repository;
 
     public AutomovelController(AutomovelRepository repository) {

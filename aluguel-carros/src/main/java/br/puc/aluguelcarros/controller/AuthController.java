@@ -39,6 +39,10 @@ public class AuthController {
         this.tokenGenerator = tokenGenerator;
     }
 
+    /**
+     * O método pega 'email' e 'senha' direto do body, mas não valida se vieram nulos ou vazios antes de chamar o serviço. 
+     * Seria bom retornar um 'badRequest' quando faltar algum campo, em vez de deixar a validação estourar mais para frente.
+     */
     @Post("/login")
     public HttpResponse<?> login(@Body Map<String, String> body) {
         String email = body.get("email");

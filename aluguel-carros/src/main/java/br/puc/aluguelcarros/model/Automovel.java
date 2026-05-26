@@ -33,8 +33,14 @@ public class Automovel {
     private String modelo;
 
     private String cor;
+
+    /**
+     * Não encontrei validação para 'valorDiaria', 'ano' e 'placa' além do unique no banco. 
+     * Seria bom impedir diária nula e negativa e ano inválido antes de salvar, porque isso afeta no cálculo do pedido.
+     */
     private int ano;
     private Double valorDiaria;
+
     private boolean disponivel = true;
     private String urlFoto;
 

@@ -48,6 +48,12 @@ public class ClienteService {
     public List<Cliente> listarTodos() {
         return repository.findAll();
     }
+    
+    /**
+     * nos métodos listarTodosDTO e buscarPorIdDTO
+     * A conversão de 'Cliente' para 'ClienteDTO' está repetida nos dois métodos. 
+     * Seria interessante extrair isso para um método privado, como o 'toDTO' (como usou no PedidoService.java), deixando o service mais limpo e evitando ter que alterar dois lugares se o DTO mudar.
+     */
 
     @Transactional
     public List<ClienteDTO> listarTodosDTO() {

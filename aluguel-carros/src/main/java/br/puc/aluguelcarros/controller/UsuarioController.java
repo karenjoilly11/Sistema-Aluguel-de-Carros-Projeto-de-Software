@@ -34,6 +34,11 @@ import java.util.Map;
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class UsuarioController {
 
+    /** 
+     * Alguns controllers (AutomovelController.java, UsuarioController.java e ContratoController.java) acessam o Repository diretamente, enquanto outros passam por Service. 
+     * Para manter a arquitetura MVC mais organizada, seria interessante concentrar regra de negócio nos Services.
+    */
+   
     private final UsuarioRepository repository;
     private final AuthService authService;
 

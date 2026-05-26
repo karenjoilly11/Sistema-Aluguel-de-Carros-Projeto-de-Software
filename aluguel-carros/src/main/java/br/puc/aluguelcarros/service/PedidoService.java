@@ -48,6 +48,17 @@ public class PedidoService {
 
     @Transactional
     public PedidoDTO criarSolicitacao(PedidoAluguel pedido) {
+
+        /**
+         * O código valida se o carro está disponível, mas não muda a disponibilidade depois de criar o pedido. 
+         * Dependendo da regra escolhida pelo grupo, isso pode permitir vários pedidos pendentes para o mesmo carro no mesmo período.
+         */
+
+        /**
+         * A criação do pedido recebe 'cliente' e 'automovel' direto no body. 
+         * Talvez fosse melhor usar um DTO de entrada com 'clienteId' e 'automovelId', evitando depender de entidade vindo diretamente do frontend.
+         */
+
         // Validar automóvel
         Automovel auto = autoRepo.findById(pedido.getAutomovel().getId())
                 .orElseThrow(() -> new RuntimeException("Automóvel não encontrado"));
@@ -87,6 +98,11 @@ public class PedidoService {
     }
 
     public void cancelarSolicitacao(Long id) {
+        
+        /**
+         * Atualmente o cancelamento de pedido não valida o status antes de cancelar, permitindo o usuário cancelar qualquer pedido, até um que já esteja como APROVADO ou CONCLUIDO, podendo quebrar o fluxo esperado do aluguel.
+         */
+
         PedidoAluguel pedido = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado: " + id));
         pedido.setStatus("CANCELADO");
@@ -113,6 +129,17 @@ public class PedidoService {
 
     @Transactional
     public ContratoDTO converterParaContrato(Long id) {
+
+        /**
+         * Seria importante também validar o status antes de aprovar o pedido. 
+         * Atualmente dá para gerar contrato de pedido cancelado ou ou até gerar contrato mais de uma vez para o mesmo pedido.
+         */
+
+        /**
+         * Aqui o pedido vira APROVADO direto, mas não parece chamar a análise financeira antes. 
+         * Como a regra do sistema depende dessa análise, talvez seja melhor aprovar só se 'realizarAnaliseFinanceira retornar 'true'.
+         */
+
         PedidoAluguel pedido = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado: " + id));
         pedido.setStatus("APROVADO");

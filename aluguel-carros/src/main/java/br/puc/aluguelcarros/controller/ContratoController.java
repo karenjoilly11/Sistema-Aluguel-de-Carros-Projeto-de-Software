@@ -25,11 +25,22 @@ import io.micronaut.security.rules.SecurityRule;
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class ContratoController {
 
+    /** 
+     * Alguns controllers (AutomovelController.java, UsuarioController.java e ContratoController.java) acessam o Repository diretamente, enquanto outros passam por Service. 
+     * Para manter a arquitetura MVC mais organizada, seria interessante concentrar regra de negócio nos Services.
+    */
+
     private final ContratoRepository repository;
 
     public ContratoController(ContratoRepository repository) {
         this.repository = repository;
     }
+
+    /** 
+     * Aqui o controller retorna a entidade 'Contrato' direto. 
+     * Como o projeto já usa DTO em pedidos e clientes para evitar referência circular e exposição de dados extras, 
+     * seria mais consistente retornar 'ContratoDTO' também nesses endpoints.
+    */
 
     @Get("/{id}")
     public HttpResponse<Contrato> buscar(Long id) {
