@@ -31,7 +31,7 @@ import java.util.List;
 public class AutomovelController {
 
     /** 
-     * Alguns controllers (AutomovelController.java, UsuarioController.java e ContratoController.java) acessam o Repository diretamente, enquanto outros passam por Service. 
+     * Este controller esta acessando o Repository diretamente, enquanto outros passam por Service. 
      * Para manter a arquitetura MVC mais organizada, seria interessante concentrar regra de negócio nos Services.
     */
     private final AutomovelRepository repository;
