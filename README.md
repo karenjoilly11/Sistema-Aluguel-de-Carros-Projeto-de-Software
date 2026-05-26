@@ -1,5 +1,8 @@
 # 🚗 Aluguel de Carros - Projeto de Software
 
+`No README.md, na descrição inicial do projeto
+O README diz que foi usado Spring Boot, mas o projeto está em Micronaut. Ajustar essa parte para não confundir quem for ler o projeto.`
+
 Sistema desenvolvido em **Java/Spring Boot** utilizando arquitetura **MVC**. O projeto contempla o gerenciamento completo de locações, incluindo CRUD de clientes com validação de rendimentos, autenticação de usuários (Clientes/Agentes) e fluxo de análise financeira, seguindo padrões de Engenharia de Software e modelagem UML.
 
 ---
